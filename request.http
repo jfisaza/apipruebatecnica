@@ -27,17 +27,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/api/user/63e030d6542579855f7e6a0c HTTP/1.1
-Content-Type: application/json
-
-{
-    "identificacion": "64545616",
-    "nombre": "Prueba",
-    "apellido": "Prueba",
-}
-
-###
-POST http://localhost:3000/api/transaction HTTP/1.1
+POST https://api-pruebatecnica.onrender.com/api/transaction HTTP/1.1
 Content-Type: application/json
 
 {
@@ -46,4 +36,22 @@ Content-Type: application/json
     "valor": 50000,
     "descripcion": "Ingreso",
     "user": "63e030d6542579855f7e6a0c"
+}
+
+###
+POST http://localhost:3000/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "usuario": "jfisaza30@gmail.com",
+    "contraseña": "contraseña"
+}
+
+###
+GET http://localhost:3000/api/getUser HTTP/1.1
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IiIsIl9pZCI6IjYzZTE5Y2QxOWU5MGE4MzI5MDdhMzJhZSIsImlkZW50aWZpY2FjaW9uIjoiMTA5ODgyMDA3MCIsIm5vbWJyZSI6IkpvaG4iLCJhcGVsbGlkbyI6IklzYXphIiwiY29ycmVvIjoiamZpc2F6YTMwQGdtYWlsLmNvbSIsInRlbGVmb25vIjozMTEyODUyMDc2LCJwaW4iOjEyMzQ1NiwiY29udHJhc2XDsWEiOiIkMmIkMTIkdzBrS25IL3dxZ3V5U0lHNlRFWGJUZXM4NGxMMEgwMWZsbmdSSDVLaTdPZlZhUnRjdWFmWGkiLCJzYWxkbyI6MCwiX192IjowLCJpYXQiOjE2NzU3MzE1NzQsImV4cCI6MTY3NTczMjQ3NH0.d0oCNeXwYqElKRJa1nYq5Fewn_9sS603V_P4fDsDr10
+
+{
+
 }

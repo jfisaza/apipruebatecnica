@@ -33,7 +33,13 @@ const userSchema = mongoose.Schema({
     },
     saldo: {
         type: Number,
-        required: false
+        required: false,
+        default: 0
+    },
+    token: {
+        type: String,
+        required: false,
+        default: ""
     }
 })
 
