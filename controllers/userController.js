@@ -30,7 +30,7 @@ exports.getUser = async (req, res) => {
 exports.userStore = async (req, res) => {
     let data = req.body
     // Se genera el token
-    const token = await jwt.sign(data,process.env.SECRET,{ expiresIn: '15m' })
+    const token = await jwt.sign({ telefono: data.telefono},process.env.SECRET,{ expiresIn: '15m' })
     // Se encripta la contraseña
     const salt = bcrypt.genSaltSync(saltRounds)
     data.contraseña = bcrypt.hashSync(req.body.contraseña, salt)
@@ -64,7 +64,7 @@ exports.login = async (req,res) => {
         return
     }
 
-    const token = await jwt.sign(user.toJSON(),process.env.SECRET,{ expiresIn: '15m' })
+    const token = await jwt.sign({ telefono: user.telefono},process.env.SECRET,{ expiresIn: '15m' })
     userSchema.updateOne({ _id: user._id },{ token: token }).then(resp => {
         res.json({ data: user, token: token })
     }).catch(error => {
@@ -76,13 +76,26 @@ exports.login = async (req,res) => {
 
 // Actualizar datos del usuario
 exports.update = (req, res) => {
-    const { _id } = req.params
+    const { id } = req.params
     const { identificacion,nombre,apellido } = req.body
-    userSchema.updateOne({ _id: _id }, { $set: { identificacion,nombre,apellido } }).then(data => {
-        res.json(data)
+    userSchema.updateOne({ _id: id }, { $set: { identificacion,nombre,apellido } }).then(data => {
+        res.json({ message: 'success', status: 200 })
     }).catch(error => {
         console.log(error)
         res.status(500)
         res.json({ message: 'error' })
     })
+}
+
+// Restablecer el pin del usuario
+exports.restablecerPin = async (req, res) => {
+    const { pin, _id } = req.body
+    userSchema.updateOne({ _id: _id }, { $set: { pin: pin, intentos: 0 } }).then(data => {
+        res.json({ message: 'success', status: 200 })
+    }).catch(error => {
+        console.log(error)
+        res.status(500)
+        res.json({ message: 'error' })
+    })
+
 }

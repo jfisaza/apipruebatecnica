@@ -27,15 +27,13 @@ Content-Type: application/json
 }
 
 ###
-POST https://api-pruebatecnica.onrender.com/api/transaction HTTP/1.1
+POST http://localhost:3000/api/transferir HTTP/1.1
 Content-Type: application/json
 
 {
-    "fecha": "2023-02-05",
-    "ingreso": 1,
-    "valor": 50000,
-    "descripcion": "Ingreso",
-    "user": "63e030d6542579855f7e6a0c"
+    "valor": 5000,
+    "_id": "63e19aff313af117e4a7eafc",
+    "telefono": 3112852076
 }
 
 ###

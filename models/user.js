@@ -40,6 +40,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: false,
         default: ""
+    },
+    intentos: {
+        type: Number,
+        required: false,
+        default: 0
     }
 })
 

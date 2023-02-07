@@ -10,10 +10,16 @@ var userController = require('../controllers/userController');
 var transactionController= require('../controllers/transactionController');
 
 // Routes
+// Rutas de usuario
 router.post('/user',userController.userStore)
 router.post('/login',userController.login)
+router.put('/actualizaUser/:id',validateToken,userController.update)
 router.get('/getUser', validateToken,userController.getUser)
-router.post('/transaction',transactionController.transactionStore)
+// Rutas de transacciones
+router.get('/getMovimientos/:id',validateToken,transactionController.getMovimientos)
+router.post('/transferir',validateToken,transactionController.transferir)
+router.post('/cargarSaldo',validateToken,transactionController.cargarSaldo)
+router.post('/realizarPago',validateToken,transactionController.realizarPago)
 
 
 module.exports = router;
