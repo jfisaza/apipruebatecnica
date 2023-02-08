@@ -25,7 +25,9 @@ app.use(cors({
   origin: '*'
 }));
 app.use('/api', indexRouter);
-
+app.use('/', function(req,res){ 
+  res.send('Prueba técnica John Fabio Isaza')
+})
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
