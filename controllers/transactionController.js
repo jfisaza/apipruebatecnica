@@ -82,6 +82,7 @@ exports.transferir = async (req, res) => {
 // Realizar pago
 exports.realizarPago = async (req, res) => {
     // Se realizan validaciones para verificar que exista el usuario, que el pin sea correcto, que el pin no esté bloqueado y que tenga suficiente saldo
+    console.log(req.body)
     const user = await userSchema.findOne({ telefono: req.body.telefono })
     if(!user || user.lenght == 0){
         res.status(422)
@@ -96,7 +97,7 @@ exports.realizarPago = async (req, res) => {
     }
 
     if(req.body.pin != user.pin){
-        await userSchema.updateOne({ _id: emisor._id }, { $set: { intentos: user.intentos+1 }})
+        await userSchema.updateOne({ _id: user._id }, { $set: { intentos: user.intentos+1 }})
         res.status(422)
         res.json({ message: 'El pin es incorrecto', status: 422 })
         return
@@ -112,7 +113,7 @@ exports.realizarPago = async (req, res) => {
     session.startTransaction()
     // Se calcula el saldo, se actualiza el usuario y se inserta la transacción
     let saldo = user.saldo - parseFloat(req.body.valor)
-    userSchema.updateOne({ _id: emisor._id }, { $set: { saldo }}).then(async (response) => {
+    userSchema.updateOne({ _id: user._id }, { $set: { saldo }}).then(async (response) => {
         
         const transaccion = transactionSchema({ fecha: new Date, ingreso: 0, valor: req.body.valor, descripcion: req.body.descripcion, user: user._id })
         transaccion.save()

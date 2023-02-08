@@ -20,7 +20,7 @@ router.get('/recuperarPin/:id', validateToken,userController.recuperarPin)
 router.get('/getMovimientos/:id',validateToken,transactionController.getMovimientos)
 router.post('/transferir',validateToken,transactionController.transferir)
 router.post('/cargarSaldo',validateToken,transactionController.cargarSaldo)
-router.post('/realizarPago',validateToken,transactionController.realizarPago)
+router.post('/realizarPago',transactionController.realizarPago)
 
 
 module.exports = router;
