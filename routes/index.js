@@ -15,6 +15,7 @@ router.post('/user',userController.userStore)
 router.post('/login',userController.login)
 router.put('/actualizaUser/:id',validateToken,userController.update)
 router.get('/getUser', validateToken,userController.getUser)
+router.get('/recuperarPin/:id', validateToken,userController.recuperarPin)
 // Rutas de transacciones
 router.get('/getMovimientos/:id',validateToken,transactionController.getMovimientos)
 router.post('/transferir',validateToken,transactionController.transferir)

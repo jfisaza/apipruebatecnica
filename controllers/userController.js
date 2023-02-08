@@ -87,11 +87,17 @@ exports.update = (req, res) => {
     })
 }
 
-// Restablecer el pin del usuario
-exports.restablecerPin = async (req, res) => {
-    const { pin, _id } = req.body
-    userSchema.updateOne({ _id: _id }, { $set: { pin: pin, intentos: 0 } }).then(data => {
-        res.json({ message: 'success', status: 200 })
+// Recuperar el pin del usuario
+exports.recuperarPin = async (req, res) => {
+    const { id } = req.params
+    userSchema.updateOne({ _id: id }, { $set: { intentos: 0 } }).then(resp => {
+        userSchema.findOne({ _id: id },{ pin: 1 }).then(response => {
+            res.json({ pin: response.pin })
+        }).catch(error => {
+            console.log(error)
+            res.status(500)
+            res.json({ message: 'error' })
+        })
     }).catch(error => {
         console.log(error)
         res.status(500)

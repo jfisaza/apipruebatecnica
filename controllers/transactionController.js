@@ -4,7 +4,7 @@ const userSchema = require('../models/user')
 // Obtener reporte de movimientos de un usuario
 exports.getMovimientos = async (req, res) => {
     const { id } = req.params
-    const movimientos = await transactionSchema.find({ user: id })
+    const movimientos = await transactionSchema.find({ user: id }).sort({ fecha: 'desc' })
     res.json({ data: movimientos })
 }
 
@@ -15,14 +15,22 @@ exports.cargarSaldo = async (req, res) => {
     const user = await userSchema.findOne({ _id: req.body._id })
     let newSaldo = user.saldo+ parseInt(req.body.valor)
 
+    const session = await userSchema.startSession()
+    session.startTransaction()
     // Se actualiza el saldo y se registra la transacción
-    userSchema.updateOne({ _id: req.body._id }, { $set: { saldo: newSaldo }}).then(response => {
+    userSchema.updateOne({ _id: req.body._id }, { $set: { saldo: newSaldo }}).then(async (response) => {
 
         const userTransaction = transactionSchema({ fecha: new Date, ingreso: 1, valor: req.body.valor, descripcion: 'Recarga de saldo', user: user._id })
         userTransaction.save()
 
+        await session.commitTransaction();
+        session.endSession();
+
         res.json({ message: 'Success', status: 200 })
-    }).catch(error => {
+    }).catch(async (error) => {
+        await session.abortTransaction();
+        session.endSession();
+
         res.status(500)
         res.json({ message: 'error' })
     })
@@ -50,6 +58,8 @@ exports.transferir = async (req, res) => {
         return
     }
 
+    const session = await userSchema.startSession()
+    session.startTransaction()
     // Se actualiza el saldo del emisor
     await userSchema.updateOne({ _id: emisor._id }, { $set: { saldo }})
 
@@ -61,6 +71,9 @@ exports.transferir = async (req, res) => {
 
     const transaccionReceptor = transactionSchema({ fecha: new Date, ingreso: 1, valor: req.body.valor, descripcion: 'Transferencia del usuario '+emisor.nombre+' '+emisor.apellido, user: receptor._id })
     transaccionReceptor.save()
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.json({ message: 'Success', status: 200 })
     
@@ -95,14 +108,24 @@ exports.realizarPago = async (req, res) => {
         return
     }
 
+    const session = await userSchema.startSession()
+    session.startTransaction()
+    // Se calcula el saldo, se actualiza el usuario y se inserta la transacción
     let saldo = user.saldo - parseFloat(req.body.valor)
-    userSchema.updateOne({ _id: emisor._id }, { $set: { saldo }}).then(response => {
+    userSchema.updateOne({ _id: emisor._id }, { $set: { saldo }}).then(async (response) => {
+        
         const transaccion = transactionSchema({ fecha: new Date, ingreso: 0, valor: req.body.valor, descripcion: req.body.descripcion, user: user._id })
         transaccion.save()
 
+        await session.commitTransaction();
+        session.endSession();
+
         res.json({ message: 'success', status: 200 })
 
-    }).catch(error => {
+    }).catch(async (error) => {
+        await session.abortTransaction();
+        session.endSession();
+
         res.status(500)
         res.json({ message: 'error' })
     })
