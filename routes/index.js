@@ -11,6 +11,7 @@ var transactionController= require('../controllers/transactionController');
 
 // Routes
 // Rutas de usuario
+router.get('/', function(req,res){ res.send('Prueba técnica John Fabio Isaza') })
 router.post('/user',userController.userStore)
 router.post('/login',userController.login)
 router.put('/actualizaUser/:id',validateToken,userController.update)
